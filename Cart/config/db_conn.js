@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const redis = require('redis');
-require('dotenv').config();
+require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') });
+
 
 const redisClient = redis.createClient();
 
@@ -12,6 +13,12 @@ const mongo_username = process.env.MONGO_USERNAME;
 const mongo_password = process.env.MONGO_PASSWORD;
 const mongo_cluster = process.env.MONGO_CLUSTER;
 const mongo_database = process.env.MONGO_DBNAME;
+
+console.log("MongoDB Configuration:");
+console.log("Username:", mongo_username);
+console.log("Cluster:", mongo_cluster);
+console.log("Database:", mongo_database);
+// Don't log the password for security reasons
 
 
 mongoose.connect(`mongodb+srv://${mongo_username}:${mongo_password}@${mongo_cluster}/${mongo_database}?retryWrites=true&w=majority`

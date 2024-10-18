@@ -1,6 +1,9 @@
 import "../Style/Register.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 function Register() {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,46 +16,47 @@ function Register() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    // Check if passwords match
+    if (password !== confpassword) {
+      alert("Passwords don't match");
+      return; // Stop the function if passwords don't match
+    }
+
+    const data = {
+      email,
+      password,
+      firstName,
+      lastName,
+      age,
+      phone,
+      gender
+    };
+
     try {
-      const response = await fetch("http://localhost:3001/users", {
+      const response = await fetch("http://localhost:3001/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email, password, firstName, lastName, age, phone, gender })
+        body: JSON.stringify(data)
       });
   
       if (response.ok) {
-        console.log("Registered successful");
-        window.location.href = "/";
+        console.log("Registered successfully");
+        navigate("/login"); // Navigate to login on successful registration
       } else {
-        console.log("Registered failed");
+        console.log("Registration failed");
       }
     } catch (error) {
       console.error("Error:", error);
     }
-
-    if (password === confpassword) {
-      const data = {
-        email,
-        password,
-        firstName,
-        lastName,
-        age,
-        phone,
-        gender
-      };
-      const dataString = JSON.stringify(data);
-      window.location.href = "/login";
-    } else {
-      alert("passwords doesn't match");
-    }
   }
+
   return (
     <div className="bg-img">
       <div className="registerContent">
         <header>Register Form</header>
-        <form action="http://localhost:3001/users" method="post" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className="row">
             <div className="col">
               <h6>First name</h6>
@@ -69,9 +73,8 @@ function Register() {
                   className="form-control"
                   required
                   placeholder="First Name"
-                  name="firstName"
                   onChange={(event) => setFirstName(event.target.value)}
-                ></input>
+                />
               </div>
             </div>
             <div className="col">
@@ -81,9 +84,8 @@ function Register() {
                   className="form-control"
                   required
                   placeholder="Last Name"
-                  name="lastName"
                   onChange={(event) => setLastName(event.target.value)}
-                ></input>
+                />
               </div>
             </div>
           </div>
@@ -103,9 +105,8 @@ function Register() {
                   className="form-control"
                   required
                   placeholder="Email"
-                  name="email"
                   onChange={(event) => setEmail(event.target.value)}
-                ></input>
+                />
               </div>
             </div>
             <div className="col">
@@ -115,9 +116,8 @@ function Register() {
                   className="form-control"
                   required
                   placeholder="Phone"
-                  name="phone"
                   onChange={(event) => setPhoneNumber(event.target.value)}
-                ></input>
+                />
               </div>
             </div>
           </div>
@@ -137,9 +137,8 @@ function Register() {
                   className="form-control"
                   required
                   placeholder="Password"
-                  name="password"
                   onChange={(event) => setPassword(event.target.value)}
-                ></input>
+                />
               </div>
             </div>
             <div className="col">
@@ -150,7 +149,7 @@ function Register() {
                   required
                   placeholder="Confirm password"
                   onChange={(event) => setconfPassword(event.target.value)}
-                ></input>
+                />
               </div>
             </div>
           </div>
@@ -162,7 +161,6 @@ function Register() {
               <h6>Gender</h6>
             </div>
           </div>
-
           <div className="row">
             <div className="col">
               <div className="field">
@@ -171,18 +169,18 @@ function Register() {
                   className="form-control"
                   required
                   placeholder="Age"
-                  name="age"
                   onChange={(event) => setAge(event.target.value)}
-                ></input>
+                />
               </div>
             </div>
             <div className="col">
               <div className="row">
                 <div className="col inline">
                   <label className="radio-inline">
-                    <input type="text" name="gender"></input>
+                    <input type="text" name="gender" onChange={(event) => setGender(event.target.value)} />
                   </label>
                 </div>
+                {/* Uncomment the below code for gender options */}
                 {/* <div className="col inline">
                   <label className="radio-inline">
                     <input type="radio" name="gender" value="female"/>

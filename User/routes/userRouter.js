@@ -6,7 +6,7 @@ const {getUser, getUsers, userRegister, loginUser} = require("../controllers/use
 
 // router.route("/").get( validateToken, getUsers)
 
-router.route("/").post(userRegister)
+router.route("/register").post(userRegister);
 
 router.route("/").get(validateToken, getUser)
 
